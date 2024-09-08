@@ -13,7 +13,7 @@ const Transactions = ({ countryOptions }) => {
     const [exchangeRateUs, setExchangeRateUs] = useState('');
     const [transactionType, setTransactionType] = useState('buy'); // Buy or sell
     const [userName, setUserName] = useState('');
-    const [TransactionReports, setTransactionReports] = useState('');
+    const [TransactionReports, setTransactionReports] = useState('مقبوضات');
     const [transactions, setTransactions] = useState([]); // Store transactions
     const [errorMessage, setErrorMessage] = useState(''); // Error message for failed validation
     const [message, setMessage] = useState('');

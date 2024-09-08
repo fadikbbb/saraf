@@ -9,13 +9,14 @@ const History = () => {
 
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
-    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // New state for delete confirmation
-    const [formData, setFormData] = useState({}); // Initial form data
-    const [transactionToDelete, setTransactionToDelete] = useState(null); // State to store transaction to delete
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [formData, setFormData] = useState({});
+    const [transactionToDelete, setTransactionToDelete] = useState(null);
+    const [searchQuery, setSearchQuery] = useState(""); // New state for search query
 
     const handleUpdateClick = (transaction) => {
         setSelectedTransaction(transaction);
-        setFormData(transaction); // Initialize form data
+        setFormData(transaction);
         setShowPopup(true);
     };
 
@@ -63,11 +64,34 @@ const History = () => {
         setTransactionToDelete(null);
     };
 
+    // Search handling
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // Filter transactions based on the search query
+    const filteredTransactions = transactions.filter((transaction) =>
+        transaction.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        transaction.TransactionReports.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div className="flex flex-col min-w-[75%] bg-gray-100 mx- p-2 shadow-md rounded-lg">
+        <div className="flex flex-col min-w-[75%] overflow-auto bg-gray-100 mx- p-2 shadow-md rounded-lg">
             <h1 className="w-full text-2xl font-bold mb-6 text-center">Transaction History</h1>
             {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-            {transactions.length === 0 ? (
+
+            {/* Search Bar */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Search by Name or Transaction Reports"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                />
+            </div>
+
+            {filteredTransactions.length === 0 ? (
                 <p className="text-center">No transactions found.</p>
             ) : (
                 <table className="w-full table-fixed  border-collapse">
@@ -86,7 +110,7 @@ const History = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {transactions.map((transaction, index) => (
+                        {filteredTransactions.map((transaction, index) => (
                             <tr key={index} className="hover:bg-gray-100">
                                 <td className="p-3 border-b">{transaction.userName}</td>
                                 <td className="p-3 border-b">{transaction.transactionType}</td>

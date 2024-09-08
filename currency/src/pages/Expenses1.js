@@ -15,6 +15,9 @@ function Expenses() {
     // State to hold all expenses
     const [expenses, setExpenses] = useState([]);
 
+    // State for tracking the search query
+    const [searchQuery, setSearchQuery] = useState('');
+
     // State to track if we're editing an existing expense
     const [editIndex, setEditIndex] = useState(null);
 
@@ -24,6 +27,11 @@ function Expenses() {
             ...formData,
             [e.target.name]: e.target.value,
         });
+    };
+
+    // Handle search input change
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
     };
 
     // Generate dynamic ID and current date
@@ -68,40 +76,55 @@ function Expenses() {
         setShowModal(true);
     };
 
+    // Filter expenses based on the search query
+    const filteredExpenses = expenses.filter((expense) =>
+        expense.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className="p-2 min-w-[75%] bg-gray-100">
             <h1 className="text-2xl font-bold mb-4 text-center">مصاريف</h1>
+
+
             <button
                 onClick={() => setShowModal(true)}
                 className="bg-blue-500 w-full text-white px-4 py-2 rounded mb-4"
             >
                 اضافة
             </button>
-
+            <h2 className="text-2xl font-bold mb-4 text-center"> قائمة المصاريف</h2>
+            {/* Search Bar */}
+            <input
+                type="text"
+                placeholder="Search by name"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="border w-full p-2 rounded mb-4"
+            />
             {/* Table */}
             <table className="w-full table-fixed bg-white shadow-md rounded">
                 <thead>
                     <tr className="bg-gray-700 text-white uppercase text-sm leading-normal">
-                        <th className="px-4 py-2 ">ID</th>
-                        <th className="px-4 py-2 ">الاسم</th>
-                        <th className="px-4 py-2 ">مدفوع الدولار الاميركي</th>
-                        <th className="px-4 py-2 ">مدفوع الليرة اللبنانية</th>
-                        <th className="px-4 py-2 ">بيان</th>
-                        <th className="px-4 py-2 ">التاريخ</th>
-                        <th className="px-4 py-2 ">Action</th>
+                        <th className="px-4 py-2">ID</th>
+                        <th className="px-4 py-2">الاسم</th>
+                        <th className="px-4 py-2">مدفوع الدولار الاميركي</th>
+                        <th className="px-4 py-2">مدفوع الليرة اللبنانية</th>
+                        <th className="px-4 py-2">بيان</th>
+                        <th className="px-4 py-2">التاريخ</th>
+                        <th className="px-4 py-2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {expenses.length > 0 ? (
-                        expenses.map((expense, index) => (
+                    {filteredExpenses.length > 0 ? (
+                        filteredExpenses.map((expense, index) => (
                             <tr key={expense.id} className="border-b hover:bg-gray-100">
-                                <td className="px-4 py-2 ">{expense.id}</td>
-                                <td className="px-4 py-2 ">{expense.name}</td>
-                                <td className="px-4 py-2 ">{expense.usdAmount}</td>
-                                <td className="px-4 py-2 ">{expense.lbpAmount}</td>
-                                <td className="px-4 py-2 ">{expense.description}</td>
-                                <td className="px-4 py-2 ">{expense.date}</td>
-                                <td className="px-4 py-2 ">
+                                <td className="px-4 py-2">{expense.id}</td>
+                                <td className="px-4 py-2">{expense.name}</td>
+                                <td className="px-4 py-2">{expense.usdAmount}</td>
+                                <td className="px-4 py-2">{expense.lbpAmount}</td>
+                                <td className="px-4 py-2">{expense.description}</td>
+                                <td className="px-4 py-2">{expense.date}</td>
+                                <td className="px-4 py-2">
                                     <button
                                         onClick={() => handleEdit(index)}
                                         className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
@@ -120,12 +143,10 @@ function Expenses() {
                     ) : (
                         <tr>
                             <td colSpan="7" className="px-4 py-2 text-center">
-                            لم تتم إضافة أي نفقات حتى الآن.
-
+                                No expenses found.
                             </td>
                         </tr>
                     )}
-                   
                 </tbody>
             </table>
 
